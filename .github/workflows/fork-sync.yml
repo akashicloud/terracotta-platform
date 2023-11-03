@@ -8,18 +8,29 @@ jobs:
     runs-on: ubuntu-latest
     name: "Sync from Terracotta-OSS/terracotta-platform@master"
     steps:
-    - name: "Checkout: master"
-      uses: actions/checkout@v2
+    - name: "Checkout master repo"
+      uses: actions/checkout@v3
       with:
         ref: master
         token: ${{ github.token }}
-    - name: "Update: master"
-      id: sync-master
+    - name: "Sync upstream changes"
+      id: sync
       uses: aormsby/Fork-Sync-With-Upstream-action@v3.4
       with:
         target_repo_token: ${{ secrets.GITHUB_TOKEN }}
         upstream_sync_repo: Terracotta-OSS/terracotta-platform
         upstream_sync_branch: master
         target_sync_branch: master
+
+    - name: New commits found
+      if: steps.sync.outputs.has_new_commits == 'true'
+      run: echo "New commits were found to sync."
+      
+    - name: No new commits
+      if: steps.sync.outputs.has_new_commits == 'false'
+      run: echo "There were no new commits."
+  
+    - name: Show value of 'has_new_commits'
+      run: echo ${{ steps.sync.outputs.has_new_commits }}
     - name: Timestamp
       run: date
