@@ -15,13 +15,11 @@ jobs:
         token: ${{ github.token }}
     - name: "Update: master"
       id: sync-master
-      uses: mathieucarbou/Fork-Sync-With-Upstream-action@fork-sync
+      uses: aormsby/Fork-Sync-With-Upstream-action@v3.4
       with:
-        domain: 'github.com'
-        upstream_repository: Terracotta-OSS/terracotta-platform
-        upstream_branch: master
-        target_branch: master
-        git_pull_args: --ff-only
-        # git_push_args: --force
+        target_repo_token: ${{ secrets.GITHUB_TOKEN }}
+        upstream_sync_repo: Terracotta-OSS/terracotta-platform
+        upstream_sync_branch: master
+        target_sync_branch: master
     - name: Timestamp
       run: date
